@@ -92,7 +92,7 @@ export default function App() {
           >
             <div className="info">
               <div className="name">{car.year} {car.make} {car.model}</div>
-              <div className="meta">{car.yard}</div>
+              <div className="meta">{car.yard} · Row {car.row}</div>
               <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>📋</button></div>
               <div className="meta">{formatDate(car.dateAdded)}{daysBadge(car.dateAdded)}</div>
             </div>
