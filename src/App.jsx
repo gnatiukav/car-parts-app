@@ -1,6 +1,19 @@
 import { useState, useEffect } from 'react';
 import { PARTS_LIST } from './data.js';
 
+function formatDate(d) {
+  if (!d) return '';
+  const [y, m, day] = d.split('-');
+  return `${day}.${m}.${y.slice(2)}`;
+}
+
+function daysBadge(d) {
+  if (!d) return null;
+  const days = Math.floor((Date.now() - new Date(d)) / 86400000);
+  if (days < 3) return null;
+  return <span style={{marginLeft:8,background:'#c0392b',borderRadius:4,padding:'1px 6px',fontSize:11}}>{days}д</span>;
+}
+
 export default function App() {
   const [screen, setScreen] = useState('home');
   const [cars, setCars] = useState([]);
@@ -80,8 +93,8 @@ export default function App() {
             <div className="info">
               <div className="name">{car.year} {car.make} {car.model}</div>
               <div className="meta">{car.yard}</div>
-              <div className="meta">VIN: {car.vin}</div>
-              <div className="meta">Добавлено: {car.dateAdded}</div>
+              <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>copy</button></div>
+              <div className="meta">{formatDate(car.dateAdded)}{daysBadge(car.dateAdded)}</div>
             </div>
           </div>
         ))}
