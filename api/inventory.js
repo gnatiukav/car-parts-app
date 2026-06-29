@@ -1,43 +1,60 @@
-// Это serverless-функция Vercel. Доступна по адресу /api/inventory
-// Сейчас отдаёт тестовые данные — позже здесь будет реальный парсинг
-// сайтов разборок (pyp.com, picknpull.com, ipullupull.com).
-//
-// ЧТО НУЖНО СДЕЛАТЬ ПОЗЖЕ:
-// 1. Найти реальный URL поиска инвентаря (через DevTools -> Network)
-// 2. Сделать fetch() на этот URL отсюда
-// 3. Распарсить ответ (JSON или HTML через cheerio) в формат ниже
+const CSV_SOURCES = [
+  { yard: 'iPull-uPull — Fresno', url: 'https://ipullupull.com/fresno.csv' },
+  { yard: 'iPull-uPull — Pomona', url: 'https://ipullupull.com/pomona.csv' },
+  { yard: 'iPull-uPull — Sacramento', url: 'https://ipullupull.com/sacramento.csv' },
+  { yard: 'iPull-uPull — Stockton', url: 'https://ipullupull.com/stockton.csv' },
+]
+
+const TRACKED = [
+  { make: 'LAND ROVER', model: 'VELAR' },
+  { make: 'JAGUAR', model: 'F-PACE' },
+  { make: 'LEXUS', model: 'RX' },
+  { make: 'TOYOTA', model: 'PRIUS' },
+]
+
+function parseCsv(text) {
+  const lines = text.trim().split('\n')
+  return lines.slice(1).map((line) => {
+    const cols = line.split(',').map((c) => c.trim())
+    const [dateAdded, year, make, model, vin, stock, yard, row, freshSet] = cols
+    return { dateAdded, year, make, model, vin, stock, yard, row, freshSet }
+  })
+}
+
+function isTracked(make, model) {
+  return TRACKED.some(
+    (t) =>
+      make?.toUpperCase() === t.make &&
+      model?.toUpperCase().startsWith(t.model)
+  )
+}
 
 export default async function handler(req, res) {
-  // --- ВРЕМЕННЫЕ ТЕСТОВЫЕ ДАННЫЕ ---
-  const mockCars = [
-    {
-      vin: 'TESTVIN0001',
-      make: 'Land Rover',
-      model: 'Velar',
-      year: 2018,
-      photo: 'https://placehold.co/400x300/111/888?text=Velar',
-      source: 'https://www.pyp.com/inventory/',
-      yard: 'Pick Your Part — Anaheim',
-    },
-    {
-      vin: 'TESTVIN0002',
-      make: 'Jaguar',
-      model: 'F-Pace',
-      year: 2019,
-      photo: 'https://placehold.co/400x300/111/888?text=F-Pace',
-      source: 'https://www.picknpull.com/',
-      yard: 'Pick-n-Pull — Oakland',
-    },
-    {
-      vin: 'TESTVIN0003',
-      make: 'Lexus',
-      model: 'RX',
-      year: 2017,
-      photo: 'https://placehold.co/400x300/111/888?text=RX',
-      source: 'https://ipullupull.com/',
-      yard: 'iPull-uPull — Sacramento',
-    },
-  ]
-
-  res.status(200).json({ cars: mockCars })
+  try {
+    const allCars = []
+    for (const source of CSV_SOURCES) {
+      const response = await fetch(source.url)
+      if (!response.ok) continue
+      const text = await response.text()
+      const rows = parseCsv(text)
+      for (const row of rows) {
+        if (!row.vin || !isTracked(row.make, row.model)) continue
+        allCars.push({
+          vin: row.vin,
+          make: row.make,
+          model: row.model,
+          year: Number(row.year) || row.year,
+          photo: `https://placehold.co/400x300/111/888?text=${encodeURIComponent(row.make + ' ' + row.model)}`,
+          source: 'https://ipullupull.com/inventory-pricing/',
+          yard: source.yard,
+          dateAdded: row.dateAdded,
+        })
+      }
+    }
+    allCars.sort((a, b) => (a.dateAdded < b.dateAdded ? 1 : -1))
+    res.status(200).json({ cars: allCars })
+  } catch (e) {
+    console.error('Ошибка загрузки инвентаря', e)
+    res.status(500).json({ cars: [], error: 'Не удалось загрузить инвентарь' })
+  }
 }
