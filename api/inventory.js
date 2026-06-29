@@ -22,11 +22,7 @@ function parseCsv(text) {
 }
 
 function isTracked(make, model) {
-  return TRACKED.some(
-    (t) =>
-      make?.toUpperCase() === t.make &&
-      model?.toUpperCase().startsWith(t.model)
-  )
+  return true;
 }
 
 export default async function handler(req, res) {
