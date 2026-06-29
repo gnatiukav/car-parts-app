@@ -1,29 +1,10 @@
 import { useState, useEffect } from 'react';
-import { TRACKED_MODELS, PARTS_LIST } from './data.js';
-
-// Ключ в localStorage, где храним VIN-ы машин, которые уже видели
-const SEEN_KEY = 'seenCarVins';
-
-function getSeenVins() {
-  try {
-    return JSON.parse(localStorage.getItem(SEEN_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-function markAllSeen(cars) {
-  const vins = cars.map((c) => c.vin);
-  localStorage.setItem(SEEN_KEY, JSON.stringify(vins));
-}
+import { PARTS_LIST } from './data.js';
 
 export default function App() {
-  // screen: 'home' | 'car' | 'part'
   const [screen, setScreen] = useState('home');
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [activeBrand, setActiveBrand] = useState('Все');
   const [selectedCar, setSelectedCar] = useState(null);
   const [selectedPart, setSelectedPart] = useState(null);
 
@@ -44,17 +25,6 @@ export default function App() {
     loadCars();
   }, []);
 
-  const seenVins = getSeenVins();
-  const brands = ['Все', ...new Set(cars.map((c) => c.make))];
-
-  const filteredCars = cars.filter((c) => {
-    const matchesSearch = `${c.make} ${c.model}`
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const matchesBrand = activeBrand === 'Все' || c.make === activeBrand;
-    return matchesSearch && matchesBrand;
-  });
-
   function openCar(car) {
     setSelectedCar(car);
     setScreen('car');
@@ -63,10 +33,6 @@ export default function App() {
   function openPart(part) {
     setSelectedPart(part);
     setScreen('part');
-  }
-
-  function handleRefresh() {
-    loadCars().then(() => markAllSeen(cars));
   }
 
   if (screen === 'car' && selectedCar) {
@@ -92,64 +58,33 @@ export default function App() {
   return (
     <div className="screen">
       <div className="top-bar">
-        <h1 className="title">Новые машины</h1>
-        <button className="refresh-btn" onClick={handleRefresh}>
+        <h1 className="title">Новые поступления</h1>
+        <button className="refresh-btn" onClick={loadCars}>
           Обновить
         </button>
       </div>
 
-      <input
-        className="search-input"
-        placeholder="Поиск по марке или модели..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-
-      <div className="filter-row">
-        {brands.map((b) => (
-          <button
-            key={b}
-            className={`filter-chip ${activeBrand === b ? 'active' : ''}`}
-            onClick={() => setActiveBrand(b)}
-          >
-            {b}
-          </button>
-        ))}
-      </div>
-
       {loading && <div className="loading">Загрузка...</div>}
 
-      {!loading && filteredCars.length === 0 && (
-        <div className="empty">Ничего не найдено</div>
+      {!loading && cars.length === 0 && (
+        <div className="empty">Нет машин</div>
       )}
 
       {!loading &&
-        filteredCars.map((car) => {
-          const isNew = !seenVins.includes(car.vin);
-          return (
-            <div
-              key={car.vin}
-              className="car-card"
-              onClick={() => openCar(car)}
-            >
-              <img src={car.photo} alt={car.model} />
-              <div className="info">
-                <div className="name">
-                  {car.make} {car.model}{' '}
-                  {isNew && <span className="badge-new">новое</span>}
-                </div>
-                <div className="meta">
-                  {car.year} · {car.yard}
-                </div>
-              </div>
+        cars.map((car) => (
+          <div
+            key={car.vin}
+            className="car-card"
+            onClick={() => openCar(car)}
+          >
+            <div className="info">
+              <div className="name">{car.year} {car.make} {car.model}</div>
+              <div className="meta">{car.yard}</div>
+              <div className="meta">VIN: {car.vin}</div>
+              <div className="meta">Добавлено: {car.dateAdded}</div>
             </div>
-          );
-        })}
-
-      <div className="section-title">Отслеживаемые модели</div>
-      <div className="meta" style={{ color: '#888', fontSize: 13 }}>
-        {TRACKED_MODELS.join(' · ')}
-      </div>
+          </div>
+        ))}
     </div>
   );
 }
@@ -159,15 +94,11 @@ function CarScreen({ car, onBack, onOpenPart }) {
     <div className="screen">
       <div className="top-bar">
         <button className="back-btn" onClick={onBack}>
-          ← Назад
+          назад
         </button>
         <h1 className="title">
           {car.make} {car.model}
         </h1>
-      </div>
-
-      <div className="photo-row">
-        <img src={car.photo} alt={car.model} />
       </div>
 
       <div className="info-line">
@@ -177,6 +108,10 @@ function CarScreen({ car, onBack, onOpenPart }) {
       <div className="info-line">
         <span className="label">VIN</span>
         <span>{car.vin}</span>
+      </div>
+      <div className="info-line">
+        <span className="label">Добавлено</span>
+        <span>{car.dateAdded}</span>
       </div>
       <div className="info-line">
         <span className="label">Локация</span>
@@ -190,7 +125,7 @@ function CarScreen({ car, onBack, onOpenPart }) {
       </div>
 
       <div className="section-title">
-        Детали — нажми, чтобы узнать цену на eBay
+        Детали - нажми, чтобы узнать цену на eBay
       </div>
       <div className="part-grid">
         {PARTS_LIST.map((part) => (
@@ -212,9 +147,9 @@ function PartScreen({ car, part, onBack }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const query = `${car.year} ${car.make} ${car.model} ${part}`;
+    const query = car.year + ' ' + car.make + ' ' + car.model + ' ' + part;
     setLoading(true);
-    fetch(`/api/ebay?query=${encodeURIComponent(query)}`)
+    fetch('/api/ebay?query=' + encodeURIComponent(query))
       .then((res) => res.json())
       .then((d) => setData(d))
       .catch(() => setData(null))
@@ -225,7 +160,7 @@ function PartScreen({ car, part, onBack }) {
     <div className="screen">
       <div className="top-bar">
         <button className="back-btn" onClick={onBack}>
-          ← Назад
+          назад
         </button>
         <h1 className="title">{part}</h1>
       </div>
@@ -237,14 +172,12 @@ function PartScreen({ car, part, onBack }) {
       {loading && <div className="loading">Ищем цены на eBay...</div>}
 
       {!loading && data && (
-        <>
+        <div>
           <div className="price-summary">
             <div className="big">${data.avgPrice}</div>
             <div className="row">
               <span>Диапазон</span>
-              <span>
-                ${data.minPrice} – ${data.maxPrice}
-              </span>
+              <span>${data.minPrice} - ${data.maxPrice}</span>
             </div>
             <div className="row">
               <span>Найдено лотов</span>
@@ -260,13 +193,13 @@ function PartScreen({ car, part, onBack }) {
               target="_blank"
               rel="noreferrer"
               className="listing-row"
-              style={{ textDecoration: 'none', color: '#fff' }}
+              style={{ textDecoration: 'none', color: 'white' }}
             >
               <span>{l.title}</span>
               <span className="lp">${l.price}</span>
             </a>
           ))}
-        </>
+        </div>
       )}
 
       {!loading && !data && (
