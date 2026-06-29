@@ -1,0 +1,240 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #000000;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+  background: #000000;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: #4ea1ff;
+}
+
+.screen {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100vh;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.back-btn {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.refresh-btn {
+  margin-left: auto;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+.search-input {
+  width: 100%;
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.filter-chip {
+  background: #111;
+  border: 1px solid #333;
+  color: #aaa;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.filter-chip.active {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.car-card {
+  display: flex;
+  gap: 12px;
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.car-card img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #222;
+}
+
+.car-card .info {
+  flex: 1;
+}
+
+.car-card .name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.car-card .meta {
+  color: #888;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.badge-new {
+  background: #2e7d32;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 6px;
+}
+
+.photo-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.photo-row img {
+  width: 140px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #222;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 14px;
+  color: #888;
+  text-transform: uppercase;
+  margin: 20px 0 10px;
+}
+
+.part-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.part-btn {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  color: #fff;
+  border-radius: 10px;
+  padding: 14px 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.part-btn:active {
+  background: #1c1c1c;
+}
+
+.info-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #1f1f1f;
+  font-size: 14px;
+}
+
+.info-line .label {
+  color: #888;
+}
+
+.loading,
+.empty {
+  color: #888;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.price-summary {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.price-summary .big {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.price-summary .row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.listing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.listing-row .lp {
+  font-weight: 600;
+}
