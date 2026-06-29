@@ -41,7 +41,7 @@ export default async function handler(req, res) {
           model: row.model,
           year: Number(row.year) || row.year,
           photo: `https://placehold.co/400x300/111/888?text=${encodeURIComponent(row.make + ' ' + row.model)}`,
-          source: 'https://ipullupull.com/inventory-pricing/',
+          source: `https://ipullupull.com/inventory-pricing/?search=${row.vin}`,
           yard: source.yard,
           dateAdded: row.dateAdded,
         })
