@@ -142,6 +142,12 @@ function CarScreen({ car, onBack, onOpenPart }) {
           Открыть на сайте
         </a>
       </div>
+      <div className="info-line">
+        <span className="label">eBay</span>
+        <a href={`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(car.year + ' ' + car.make + ' ' + car.model + ' parts')}&LH_Sold=1&LH_Complete=1`} target="_blank" rel="noreferrer">
+          Проданные лоты по машине
+        </a>
+      </div>
 
       <div className="section-title">
         Детали - нажми, чтобы узнать цену на eBay
@@ -186,6 +192,12 @@ function PartScreen({ car, part, onBack }) {
 
       <div className="meta" style={{ marginBottom: 12 }}>
         {car.year} {car.make} {car.model}
+      </div>
+
+      <div className="meta" style={{marginBottom: 12}}>
+        <a href={`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(car.year + ' ' + car.make + ' ' + car.model + ' ' + part)}&LH_Sold=1&LH_Complete=1`} target="_blank" rel="noreferrer" style={{color:'#4dabf7'}}>
+          📜 Посмотреть историю проданных на eBay
+        </a>
       </div>
 
       {loading && <div className="loading">Ищем цены на eBay...</div>}
