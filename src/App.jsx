@@ -393,7 +393,7 @@ export default function App() {
                   <span>{car.make} {car.model} {car.year}</span>
                 </div>
                 <div className="meta">{car.yard} · Row {car.row}</div>
-                <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>📋</button> <a href={`https://partsouq.com/en/search/all?q=${car.vin}`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#0469a2',color:'white',borderRadius:4,textDecoration:'none'}}>🔧</a> <a href={`https://epicvin.com/checkout?vin=${car.vin}`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#f5b400',color:'black',borderRadius:4,textDecoration:'none'}}>🛣️</a></div>
+                <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>📋</button> <a href={`https://partsouq.com/en/search/all?q=${car.vin}`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#0469a2',color:'white',borderRadius:4,textDecoration:'none'}}>🔧</a> <a href={`https://epicvin.com/en/check-vin-number-and-get-the-vehicle-history-report/checkout/${car.vin}?type=vin`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#f5b400',color:'black',borderRadius:4,textDecoration:'none'}}>🛣️</a></div>
                 <div className="meta">{formatDate(car.dateAdded)}{daysBadge(car.dateAdded)}</div>
               </div>
             </div>
@@ -447,7 +447,7 @@ function CarScreen({ car, onBack, isFavorite, onToggleFavorite }) {
       </div>
       <div className="info-line">
         <span className="label">Пробег / история (платно)</span>
-        <a href={`https://epicvin.com/checkout?vin=${car.vin}`} target="_blank" rel="noreferrer">
+        <a href={`https://epicvin.com/en/check-vin-number-and-get-the-vehicle-history-report/checkout/${car.vin}?type=vin`} target="_blank" rel="noreferrer">
           Проверить на EpicVIN
         </a>
       </div>
