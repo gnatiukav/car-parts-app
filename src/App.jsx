@@ -168,18 +168,7 @@ function CarScreen({ car, onBack, onOpenPart }) {
 }
 
 function PartScreen({ car, part, onBack }) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const query = car.year + ' ' + car.make + ' ' + car.model + ' ' + part;
-    setLoading(true);
-    fetch('/api/ebay?query=' + encodeURIComponent(query))
-      .then((res) => res.json())
-      .then((d) => setData(d))
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
-  }, [car, part]);
+  const ebaySoldUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(car.year + ' ' + car.make + ' ' + car.model + ' ' + part)}&LH_Sold=1&LH_Complete=1`;
 
   return (
     <div className="screen">
@@ -194,48 +183,15 @@ function PartScreen({ car, part, onBack }) {
         {car.year} {car.make} {car.model}
       </div>
 
-      <div className="meta" style={{marginBottom: 12}}>
-        <a href={`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(car.year + ' ' + car.make + ' ' + car.model + ' ' + part)}&LH_Sold=1&LH_Complete=1`} target="_blank" rel="noreferrer" style={{color:'#4dabf7'}}>
-          📜 Посмотреть историю проданных на eBay
-        </a>
-      </div>
-
-      {loading && <div className="loading">Ищем цены на eBay...</div>}
-
-      {!loading && data && (
-        <div>
-          <div className="price-summary">
-            <div className="big">${data.avgPrice}</div>
-            <div className="row">
-              <span>Диапазон</span>
-              <span>${data.minPrice} - ${data.maxPrice}</span>
-            </div>
-            <div className="row">
-              <span>Найдено лотов</span>
-              <span>{data.count}</span>
-            </div>
-          </div>
-
-          <div className="section-title">Объявления</div>
-          {data.listings.map((l) => (
-            <a
-              key={l.url}
-              href={l.url}
-              target="_blank"
-              rel="noreferrer"
-              className="listing-row"
-              style={{ textDecoration: 'none', color: 'white' }}
-            >
-              <span>{l.title}</span>
-              <span className="lp">${l.price}</span>
-            </a>
-          ))}
-        </div>
-      )}
-
-      {!loading && !data && (
-        <div className="empty">Не удалось получить данные</div>
-      )}
+      <a
+        href={ebaySoldUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="part-btn"
+        style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}
+      >
+        📜 Посмотреть историю проданных на eBay
+      </a>
     </div>
   );
 }
