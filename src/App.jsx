@@ -445,6 +445,12 @@ function CarScreen({ car, onBack, isFavorite, onToggleFavorite }) {
         </a>
       </div>
       <div className="info-line">
+        <span className="label">Пробег / история (платно)</span>
+        <a href={`https://epicvin.com/checkout?vin=${car.vin}`} target="_blank" rel="noreferrer">
+          Проверить на EpicVIN
+        </a>
+      </div>
+      <div className="info-line">
         <span className="label">Добавлено</span>
         <span>{car.dateAdded}</span>
       </div>
