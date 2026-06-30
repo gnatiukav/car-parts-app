@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { PARTS_LIST } from './data.js';
 
-// Карта бренд -> домен, чтобы подтягивать НАСТОЯЩИЕ логотипы через Clearbit Logo API.
+// Карта бренд -> домен, чтобы подтягивать НАСТОЯЩИЕ логотипы через Google Favicon Service.
 // Если бренда нет в этом списке, используется fallback-кружок с буквой (НЕ логотип).
 const BRAND_DOMAINS = {
   TOYOTA: 'toyota.com',
@@ -106,7 +106,7 @@ function NHTSAInfo({ vin }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`)
+    fetch(`/api/nhtsa?vin=${vin}`)
       .then((res) => res.json())
       .then((json) => {
         const result = json?.Results?.[0];
@@ -147,7 +147,7 @@ function NHTSAInline({ vin }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`)
+    fetch(`/api/nhtsa?vin=${vin}`)
       .then((res) => res.json())
       .then((json) => setData(json?.Results?.[0] || null))
       .catch(() => setData(null));
