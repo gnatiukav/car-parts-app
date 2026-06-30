@@ -19,7 +19,6 @@ export default function App() {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCar, setSelectedCar] = useState(null);
-  const [selectedPart, setSelectedPart] = useState(null);
 
   async function loadCars() {
     setLoading(true);
@@ -43,27 +42,11 @@ export default function App() {
     setScreen('car');
   }
 
-  function openPart(part) {
-    setSelectedPart(part);
-    setScreen('part');
-  }
-
   if (screen === 'car' && selectedCar) {
     return (
       <CarScreen
         car={selectedCar}
         onBack={() => setScreen('home')}
-        onOpenPart={openPart}
-      />
-    );
-  }
-
-  if (screen === 'part' && selectedCar && selectedPart) {
-    return (
-      <PartScreen
-        car={selectedCar}
-        part={selectedPart}
-        onBack={() => setScreen('car')}
       />
     );
   }
@@ -102,7 +85,7 @@ export default function App() {
   );
 }
 
-function CarScreen({ car, onBack, onOpenPart }) {
+function CarScreen({ car, onBack }) {
   return (
     <div className="screen">
       <div className="top-bar">
@@ -150,48 +133,26 @@ function CarScreen({ car, onBack, onOpenPart }) {
       </div>
 
       <div className="section-title">
-        Детали - нажми, чтобы узнать цену на eBay
+        Детали
       </div>
       <div className="part-grid">
-        {PARTS_LIST.map((part) => (
-          <button
-            key={part}
-            className="part-btn"
-            onClick={() => onOpenPart(part)}
-          >
-            {part}
-          </button>
-        ))}
+        {PARTS_LIST.map((part) => {
+          const ebaySoldUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(car.year + ' ' + car.make + ' ' + car.model + ' ' + part)}&LH_Sold=1&LH_Complete=1`;
+          return (
+            <div key={part} className="part-btn" style={{ cursor: 'default' }}>
+              <div style={{ marginBottom: 6 }}>{part}</div>
+              <a
+                href={ebaySoldUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{ fontSize: 12, color: '#4dabf7', textDecoration: 'none' }}
+              >
+                📜 Проданные на eBay
+              </a>
+            </div>
+          );
+        })}
       </div>
-    </div>
-  );
-}
-
-function PartScreen({ car, part, onBack }) {
-  const ebaySoldUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(car.year + ' ' + car.make + ' ' + car.model + ' ' + part)}&LH_Sold=1&LH_Complete=1`;
-
-  return (
-    <div className="screen">
-      <div className="top-bar">
-        <button className="back-btn" onClick={onBack}>
-          назад
-        </button>
-        <h1 className="title">{part}</h1>
-      </div>
-
-      <div className="meta" style={{ marginBottom: 12 }}>
-        {car.year} {car.make} {car.model}
-      </div>
-
-      <a
-        href={ebaySoldUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="part-btn"
-        style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}
-      >
-        📜 Посмотреть историю проданных на eBay
-      </a>
     </div>
   );
 }
