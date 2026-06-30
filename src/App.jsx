@@ -93,7 +93,7 @@ export default function App() {
             <div className="info">
               <div className="name">{car.year} {car.make} {car.model}</div>
               <div className="meta">{car.yard} · Row {car.row}</div>
-              <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>📋</button></div>
+              <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>📋</button> <a href={`https://partsouq.com/en/search/all?q=${car.vin}`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#0469a2',color:'white',borderRadius:4,textDecoration:'none'}}>🔧</a></div>
               <div className="meta">{formatDate(car.dateAdded)}{daysBadge(car.dateAdded)}</div>
             </div>
           </div>
@@ -121,6 +121,12 @@ function CarScreen({ car, onBack, onOpenPart }) {
       <div className="info-line">
         <span className="label">VIN</span>
         <span>{car.vin}</span>
+      </div>
+      <div className="info-line">
+        <span className="label">Схемы</span>
+        <a href={`https://partsouq.com/en/search/all?q=${car.vin}`} target="_blank" rel="noreferrer">
+          Открыть на PartSouq
+        </a>
       </div>
       <div className="info-line">
         <span className="label">Добавлено</span>
