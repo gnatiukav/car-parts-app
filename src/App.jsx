@@ -49,7 +49,8 @@ function brandLogoUrl(make) {
   const key = make.trim().toUpperCase();
   const domain = BRAND_DOMAINS[key];
   if (!domain) return null;
-  return `https://logo.clearbit.com/${domain}`;
+  // Clearbit Logo API закрыт с 8 декабря 2025, используем Google Favicon Service (бесплатно, без ключа)
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 }
 
 function BrandLogo({ make }) {
@@ -392,7 +393,7 @@ export default function App() {
                   <span>{car.make} {car.model} {car.year}</span>
                 </div>
                 <div className="meta">{car.yard} · Row {car.row}</div>
-                <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>📋</button> <a href={`https://partsouq.com/en/search/all?q=${car.vin}`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#0469a2',color:'white',borderRadius:4,textDecoration:'none'}}>🔧</a></div>
+                <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>📋</button> <a href={`https://partsouq.com/en/search/all?q=${car.vin}`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#0469a2',color:'white',borderRadius:4,textDecoration:'none'}}>🔧</a> <a href={`https://epicvin.com/checkout?vin=${car.vin}`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#f5b400',color:'black',borderRadius:4,textDecoration:'none'}}>🛣️</a></div>
                 <div className="meta">{formatDate(car.dateAdded)}{daysBadge(car.dateAdded)}</div>
               </div>
             </div>
