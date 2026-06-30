@@ -100,6 +100,49 @@ function BrandLogo({ make }) {
   );
 }
 
+function NHTSAInfo({ vin }) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`)
+      .then((res) => res.json())
+      .then((json) => {
+        const result = json?.Results?.[0];
+        setData(result || null);
+      })
+      .catch(() => setData(null))
+      .finally(() => setLoading(false));
+  }, [vin]);
+
+  if (loading) return <div className="meta">Загрузка данных по двигателю...</div>;
+  if (!data) return null;
+
+  const cylinders = data.EngineCylinders;
+  const displacement = data.DisplacementL;
+  const engineModel = data.EngineModel;
+  const hp = data.EngineHP;
+
+  if (!cylinders && !displacement && !engineModel && !hp) return null;
+
+  return (
+    <div className="info-line" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+      <span className="label">Двигатель (NHTSA)</span>
+      <span>
+        {cylinders && <>Cylinders: {cylinders}<br /></>}
+        {displacement || engineModel || hp ? (
+          <>
+            {displacement && `${displacement} `}
+            {engineModel && `${engineModel} `}
+            {hp && `${hp}HP`}
+          </>
+        ) : null}
+      </span>
+    </div>
+  );
+}
+
 function formatDate(d) {
   if (!d) return '';
   const [y, m, day] = d.split('-');
@@ -439,6 +482,7 @@ function CarScreen({ car, onBack, isFavorite, onToggleFavorite }) {
         <span className="label">VIN</span>
         <span>{car.vin}</span>
       </div>
+      <NHTSAInfo vin={car.vin} />
       <div className="info-line">
         <span className="label">Схемы</span>
         <a href={`https://partsouq.com/en/search/all?q=${car.vin}`} target="_blank" rel="noreferrer">
