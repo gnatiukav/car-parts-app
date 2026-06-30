@@ -143,6 +143,40 @@ function NHTSAInfo({ vin }) {
   );
 }
 
+function NHTSAInline({ vin }) {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`)
+      .then((res) => res.json())
+      .then((json) => setData(json?.Results?.[0] || null))
+      .catch(() => setData(null));
+  }, [vin]);
+
+  if (!data) return null;
+
+  const cylinders = data.EngineCylinders;
+  const displacement = data.DisplacementL;
+  const engineModel = data.EngineModel;
+  const hp = data.EngineHP;
+
+  if (!cylinders && !displacement && !engineModel && !hp) return null;
+
+  return (
+    <div className="meta">
+      {cylinders && `Cylinders: ${cylinders}`}
+      {(displacement || engineModel || hp) && (
+        <>
+          {cylinders ? <br /> : null}
+          {displacement && `${displacement} `}
+          {engineModel && `${engineModel} `}
+          {hp && `${hp}HP`}
+        </>
+      )}
+    </div>
+  );
+}
+
 function formatDate(d) {
   if (!d) return '';
   const [y, m, day] = d.split('-');
@@ -438,6 +472,7 @@ export default function App() {
                 <div className="meta">{car.yard} · Row {car.row}</div>
                 <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>📋</button> <a href={`https://partsouq.com/en/search/all?q=${car.vin}`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#0469a2',color:'white',borderRadius:4,textDecoration:'none'}}>🔧</a> <a href={`https://epicvin.com/en/check-vin-number-and-get-the-vehicle-history-report/checkout/${car.vin}?type=vin`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#f5b400',color:'black',borderRadius:4,textDecoration:'none'}}>🛣️</a></div>
                 <div className="meta">{formatDate(car.dateAdded)}{daysBadge(car.dateAdded)}</div>
+                <NHTSAInline vin={car.vin} />
               </div>
             </div>
           );
