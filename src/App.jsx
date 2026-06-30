@@ -448,6 +448,7 @@ export default function App() {
               key={car.vin}
               className="car-card"
               onClick={() => openCar(car)}
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
             >
               <div className="info">
                 <div className="name" style={{ display: 'flex', alignItems: 'center' }}>
@@ -472,6 +473,8 @@ export default function App() {
                 <div className="meta">{car.yard} · Row {car.row}</div>
                 <div className="meta">VIN: {car.vin} <button onClick={(e)=>{e.stopPropagation();navigator.clipboard.writeText(car.vin)}} style={{marginLeft:6,fontSize:11,padding:'1px 6px',cursor:'pointer'}}>📋</button> <a href={`https://partsouq.com/en/search/all?q=${car.vin}`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#0469a2',color:'white',borderRadius:4,textDecoration:'none'}}>🔧</a> <a href={`https://epicvin.com/en/check-vin-number-and-get-the-vehicle-history-report/checkout/${car.vin}?type=vin`} target="_blank" rel="noreferrer" onClick={(e)=>e.stopPropagation()} style={{marginLeft:6,fontSize:11,padding:'1px 6px',background:'#f5b400',color:'black',borderRadius:4,textDecoration:'none'}}>🛣️</a></div>
                 <div className="meta">{formatDate(car.dateAdded)}{daysBadge(car.dateAdded)}</div>
+              </div>
+              <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 12 }}>
                 <NHTSAInline vin={car.vin} />
               </div>
             </div>
